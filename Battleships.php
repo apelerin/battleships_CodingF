@@ -1,5 +1,7 @@
 <?php
 
+// PENSER A METTTRE EN CONSTANTES LES COORDONNES
+
 //------------------------
 
 // display the boards
@@ -58,6 +60,39 @@ function place_ship(&$board1,&$board2){
 
 }
 
+function player_fire(&$board){
+    $is_right = false;
+    while(!$is_right){
+        echo "Please choose where you wanna fire(Ex A1): ";
+        $position = trim(fgets(STDIN));
+        if($board[$x][$y] != ){ // insert where the pleyaer already fired
+            if($board[$x][$y] == ){ // if is a ship
+                // boom boom return
+            }
+            // 
+        }
+    }
+}
+
+function computer_fire(&$board){
+    $is_right = false;
+    while(!$is_right){
+        $x = mt_rand(0, 9);
+        $y = mt_rand(0, 9);
+
+        // test is the cell is one the computer already fired on 
+        if($board[$x][$y] == "~"){ //or a ship
+            $is_right = true;
+        }
+    }
+    // if is a ship, put the appropriate symbol
+    // if it's water; put the appropriate symbol
+}
+
+function is_winned(){
+
+}
+
 //------------------------
 
 $wanna_play = true;
@@ -82,6 +117,10 @@ while($wanna_play){
     // game
     $victory=false;
     while(!$victory){
+        //player_fire($board2);
+        //is_winned(); // don't forget the if
+        //computer_fire($board1);
+        //is_winned(); //don't forget the if
         $victory = true;
     }
     // replay
