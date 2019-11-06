@@ -15,11 +15,23 @@ function display_board($board1, $board2){
         echo "\n";
     }    
 }
+//display the fucki** ship
+function place_ship(&$board1,&$board2){
+    $converter_letter=["A"=>"0","B"=>"1","C"=>"2","D"=>"3","E"=>"4","F"=>"5","G"=>"6","H"=>"7","I"=>"8","J"=>"9"];
+    $converter_number=["1"=>"0","2"=>"1","3"=>"2","4"=>"3","5"=>"4","6"=>"5","7"=>"6","8"=>"7","9"=>"8","10"=>"9"];
+    $place=trim(fgets(STDIN));
+    $coordonate_Y_start=$converter_letter[$place[0]];
+    $coordonate_X_start=$converter_number[$place[1]];
+    $coordonate_Y_end=$converter_letter[$place[3]];
+    $coordonate_X_end=$converter_number[$place[4]];
+    $board1[$coordonate_Y_start][$coordonate_X_start]="O";
+    display_board($board1,$board2);
+
+}
 
 //------------------------
 
 $wanna_play = true;
-
 while($wanna_play){
     // initialisation of the board
     $board1 = [];
@@ -30,6 +42,10 @@ while($wanna_play){
             $board2[$i][$j] = "~";
         }
     }
+
+    // ship placement
+
+    // IA ship placement
 
     display_board($board1, $board2);
 
@@ -43,6 +59,10 @@ while($wanna_play){
     if(trim(fgets(STDIN)) != "y"){
         $wanna_play = false;
         echo "Byeeeeeeeeeeee\n";
+    }
+    else {
+        $wanna_play=false;
+        place_ship($board1,$board2);
     }
 
 }
