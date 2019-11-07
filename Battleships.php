@@ -23,7 +23,7 @@ function display_board($board1, $board2){
 }
 
 // length of the boat
-$list_boat=[2,3,4,5,6];
+
 function lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,&$list_boat){
     //check the lenght of the boat
     if ($coordonate_X_start<$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
@@ -38,10 +38,10 @@ function lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$
     }
     
     else{
-        print "Les bateaux de 1 n'existent pas fdp de tes grands morts, personne ne t'a jamais aimer, meme pas ta mere, t'es meme adopter, tout le monde fait semblant et tu le sais, va te pendre, ta vie entière est une errreur, zebi <3\n";
+        print "Les bateaux de 1 n'existent pas\n";
     }
     if ($lenght_boat>6){
-        print "Ne place pas un bateau de plus de 6 fdp de tes grands morts, personne ne t'a jamais aimer, meme pas ta mere, t'es meme adopter, tout le monde fait semblant et tu le sais, va te pendre, ta vie entière est une errreur, zebi <3\n";
+        print "Ne place pas un bateau de plus de 6\n";
         return "\n";
     }
     foreach ($list_boat as $value){
@@ -49,7 +49,9 @@ function lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$
     }
 }
 // place ships
-function place_ship(&$board1,&$board2,$list_boat, &$player_ships){
+
+function place_ship(&$board1,&$board2){
+    $list_boat=[2,3,4,5,6];
     $is_right=false;
     $index = 0;
     while(!$is_right){
@@ -82,10 +84,8 @@ function place_ship(&$board1,&$board2,$list_boat, &$player_ships){
             }
             $index++;
         }
+        display_board($board1,$board2);
     }
-
-    
-    display_board($board1,$board2);
 }
 
 function ships_insight(&$bundle_ship, $x, $y){
@@ -177,6 +177,58 @@ function is_winned($ai_ship, $player_ship){
     }
 }
 
+//AI
+
+function ai(&$board1,&$board2){
+    $list_boat_AI=[2,3,4,5,6];
+    $is_right=false;  
+    while(!$is_right){
+        if(count($list_boat_AI) == 0){
+            break;
+        }
+        $coordonate_Y_start=mt_rand(0,9);
+        $coordonate_X_start=mt_rand(0,9);
+        if (mt_rand(0,1)<1){
+            $coordonate_Y_end=mt_rand(0,9);
+            $coordonate_X_end=$coordonate_X_start;
+            while ($coordonate_Y_end){
+            $coordonate_Y_end=mt_rand(0,9);
+            }
+            
+        }
+        else{
+            $coordonate_X_end=mt_rand(0,9);
+            $coordonate_Y_end=$coordonate_Y_start;
+            while ($coordonate_X_end==$coordonate_X_start){
+            $coordonate_X_end=mt_rand(0,9);
+            }
+            
+        }
+        
+        
+        if($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
+            print "Pas de bateau en diagonale \n";   
+            continue;
+        }
+        lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,$list_boat_AI);
+        if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
+            while ($coordonate_X_start<=$coordonate_X_end){
+                $board2[$coordonate_Y_start][$coordonate_X_start]="O";
+                $coordonate_X_start++;
+            }    
+        }
+        else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
+            while ($coordonate_Y_start<=$coordonate_Y_end){
+                    $board2[$coordonate_Y_start][$coordonate_X_start]="O";
+                    $coordonate_Y_start++;
+            }
+        }
+        
+    }
+
+
+}
+
 //------------------------
 
 $wanna_play = true;
@@ -194,13 +246,10 @@ while($wanna_play){
 
     $player_ship = [];
 
-    place_ship($board1,$board2,$list_boat, $player_ships);
+    //place_ship($board1,$board2,$list_boat, $player_ships);
+    ai($board1,$board2,$list_boat_AI);
+    display_board($board1,$board2);
 
-    // ship placement
-
-    // IA ship placement
-
-    //n
     //display_board($board1, $board2);
 
     // game
