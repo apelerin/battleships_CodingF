@@ -23,70 +23,63 @@ function display_board($board1, $board2){
 }
 
 // length of the boat
-$list_boat=[2,3,3,4,5];
+$list_boat=[2,3,4,5,6];
 function lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,&$list_boat){
     //check the lenght of the boat
-    $count=0;
     if ($coordonate_X_start<$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
-        $lenght_boat=$coordonate_X_end-$coordonate_X_start;
-        if($lenght_boat==3){    
-            $count=$count++;
-        }
-        if($count==2){
-            $list_boat = \array_diff($list_boat, ["3"]);
-        }
-        if($lenght_boat!=3){
-            $list_boat = \array_diff($list_boat, [$lenght_boat]);
-        }
+        $lenght_boat=$coordonate_X_end-$coordonate_X_start+1;
+
+        $list_boat = array_diff($list_boat, [$lenght_boat]);
     }
     else if ($coordonate_Y_start<$coordonate_Y_end && $coordonate_X_start==$coordonate_X_end){
-        $lenght_boat=$coordonate_Y_end-$coordonate_Y_start;
-
+        $lenght_boat=$coordonate_Y_end-$coordonate_Y_start+1;        
+        
+        $list_boat = array_diff($list_boat, [$lenght_boat]);
     }
+    
     else{
         print "Les bateaux de 1 n'existent pas fdp de tes grands morts, personne ne t'a jamais aimer, meme pas ta mere, t'es meme adopter, tout le monde fait semblant et tu le sais, va te pendre, ta vie entière est une errreur, zebi <3\n";
     }
-    place_ship($board1,$board2,$list_boat);
-
+    if ($lenght_boat>6){
+        print "Ne place pas un bateau de plus de 6 fdp de tes grands morts, personne ne t'a jamais aimer, meme pas ta mere, t'es meme adopter, tout le monde fait semblant et tu le sais, va te pendre, ta vie entière est une errreur, zebi <3\n";
+        return "\n";
+    }
+    foreach ($list_boat as $value){
+        print $value . "\n";
+    }
 }
 // place ships
 function place_ship(&$board1,&$board2,$list_boat){
-    $place=trim(fgets(STDIN));
-    $coordonate_Y_start=CONVERTER_LETTER[$place[0]];
-    $coordonate_X_start=CONVERTER_NUMBER[$place[1]];
-    $coordonate_Y_end=CONVERTER_LETTER[$place[3]];
-    $coordonate_X_end=CONVERTER_NUMBER[$place[4]];
     $is_right=false;  
     while(!$is_right){
-        if($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
-            print "Pas de bateau en diagonale \n";
-            $place=trim(fgets(STDIN));
-            $coordonate_Y_start=CONVERTER_LETTER[$place[0]];
-            $coordonate_X_start=CONVERTER_NUMBER[$place[1]];
-            $coordonate_Y_end=CONVERTER_LETTER[$place[3]];
-            $coordonate_X_end=CONVERTER_NUMBER[$place[4]];
+        if(count($list_boat) == 0){
+            break;
         }
-        else {
-            $is_right=true;
+        $place=trim(fgets(STDIN));
+        $coordonate_Y_start=CONVERTER_LETTER[$place[0]];
+        $coordonate_X_start=CONVERTER_NUMBER[$place[1]];
+        $coordonate_Y_end=CONVERTER_LETTER[$place[3]];
+        $coordonate_X_end=CONVERTER_NUMBER[$place[4]];
+        if($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
+            print "Pas de bateau en diagonale \n";   
+            continue;
+        }
+        lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,$list_boat);
+        if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
+            while ($coordonate_X_start<=$coordonate_X_end){
+                $board1[$coordonate_Y_start][$coordonate_X_start]="O";
+                $coordonate_X_start++;
+            }    
+        }
+        else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
+            while ($coordonate_Y_start<=$coordonate_Y_end){
+                    $board1[$coordonate_Y_start][$coordonate_X_start]="O";
+                    $coordonate_Y_start++;
+            }
         }
     }
 
-    if(count($list_boat)!=0){
-        lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,$list_boat);
-    }
     
-    if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
-        while ($coordonate_X_start<=$coordonate_X_end){
-            $board1[$coordonate_Y_start][$coordonate_X_start]="O";
-            $coordonate_X_start++;
-        }    
-    }
-    else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
-        while ($coordonate_Y_start<=$coordonate_Y_end){
-                $board1[$coordonate_Y_start][$coordonate_X_start]="O";
-                $coordonate_Y_start++;
-        }
-    }
     display_board($board1,$board2);
 }
 
@@ -105,7 +98,7 @@ function player_fire(&$board){
                 // mettre à jour le scoring
                 return;
             }
-            $board[$x][$y] = "X"
+            $board[$x][$y] = "X";
             $is_right = true;
         }
     }
@@ -125,7 +118,7 @@ function computer_fire(&$board){
                 // mettre à jour le scoring
                 return;
             }
-            $board[$x][$y] = "X"
+            $board[$x][$y] = "X";
             $is_right = true;
         }
     }
@@ -133,7 +126,6 @@ function computer_fire(&$board){
 
 
 function is_winned(){
-    break;
 }
 
 //------------------------
