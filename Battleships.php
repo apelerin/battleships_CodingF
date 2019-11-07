@@ -82,10 +82,8 @@ function place_ship(&$board1,&$board2,$list_boat, &$player_ships){
             }
             $index++;
         }
+        display_board($board1,$board2);
     }
-
-    
-    display_board($board1,$board2);
 }
 
 function ships_insight(&$bundle_ship, $x, $y){
@@ -177,6 +175,9 @@ function is_winned($ai_ship, $player_ship){
     }
 }
 
+//AI
+function AI(){}
+
 //------------------------
 
 $wanna_play = true;
@@ -196,11 +197,6 @@ while($wanna_play){
 
     place_ship($board1,$board2,$list_boat, $player_ships);
 
-    // ship placement
-
-    // IA ship placement
-
-    //n
     //display_board($board1, $board2);
 
     // game
