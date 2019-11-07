@@ -17,7 +17,8 @@ function display_board($board1, $board2){
         echo "\n";
     }    
 }
-//display the fucki** ship
+
+// place ships
 function place_ship(&$board1,&$board2){  
     $converter_letter=["A"=>"0","B"=>"1","C"=>"2","D"=>"3","E"=>"4","F"=>"5","G"=>"6","H"=>"7","I"=>"8","J"=>"9"];
     $converter_number=["1"=>"0","2"=>"1","3"=>"2","4"=>"3","5"=>"4","6"=>"5","7"=>"6","8"=>"7","9"=>"8","10"=>"9"];
@@ -27,37 +28,33 @@ function place_ship(&$board1,&$board2){
     $coordonate_Y_end=$converter_letter[$place[3]];
     $coordonate_X_end=$converter_number[$place[4]];
     $is_right=false;  
-    while (!$is_right){
-    if ($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
-        print "Pas de bateau en diagonale \n";
-        $place=trim(fgets(STDIN));
-        $coordonate_Y_start=$converter_letter[$place[0]];
-        $coordonate_X_start=$converter_number[$place[1]];
-        $coordonate_Y_end=$converter_letter[$place[3]];
-        $coordonate_X_end=$converter_number[$place[4]];
-       }
-    else {
-     $is_right=true;
-       }
+    while(!$is_right){
+        if($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
+            print "Pas de bateau en diagonale \n";
+            $place=trim(fgets(STDIN));
+            $coordonate_Y_start=$converter_letter[$place[0]];
+            $coordonate_X_start=$converter_number[$place[1]];
+            $coordonate_Y_end=$converter_letter[$place[3]];
+            $coordonate_X_end=$converter_number[$place[4]];
+        }
+        else {
+            $is_right=true;
+        }
     }
     
     if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
         while ($coordonate_X_start<=$coordonate_X_end){
             $board1[$coordonate_Y_start][$coordonate_X_start]="O";
             $coordonate_X_start++;
-        }
-    
-        
+        }    
     }
-    else if ($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
+    else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
         while ($coordonate_Y_start<=$coordonate_Y_end){
                 $board1[$coordonate_Y_start][$coordonate_X_start]="O";
                 $coordonate_Y_start++;
-            }
-            
         }
-        display_board($board1,$board2);
-
+    }
+    display_board($board1,$board2);
 }
 
 function player_fire(&$board){
