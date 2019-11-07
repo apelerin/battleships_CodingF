@@ -77,10 +77,8 @@ function place_ship(&$board1,&$board2,$list_boat){
                     $coordonate_Y_start++;
             }
         }
+        display_board($board1,$board2);
     }
-
-    
-    display_board($board1,$board2);
 }
 
 function player_fire(&$board){
@@ -128,6 +126,9 @@ function computer_fire(&$board){
 function is_winned(){
 }
 
+//AI
+function AI(){}
+
 //------------------------
 
 $wanna_play = true;
@@ -145,11 +146,6 @@ while($wanna_play){
 
     place_ship($board1,$board2,$list_boat);
 
-    // ship placement
-
-    // IA ship placement
-
-    //n
     //display_board($board1, $board2);
 
     // game
