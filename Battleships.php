@@ -49,8 +49,9 @@ function lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$
     }
 }
 // place ships
-function place_ship(&$board1,&$board2,$list_boat){
-    $is_right=false;  
+function place_ship(&$board1,&$board2,$list_boat, &$player_ships){
+    $is_right=false;
+    $index = 0;
     while(!$is_right){
         if(count($list_boat) == 0){
             break;
@@ -68,14 +69,18 @@ function place_ship(&$board1,&$board2,$list_boat){
         if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
             while ($coordonate_X_start<=$coordonate_X_end){
                 $board1[$coordonate_Y_start][$coordonate_X_start]="O";
+                $player_ships[$index][] = $coordonate_X_start . $coordonate_Y_start;
                 $coordonate_X_start++;
-            }    
+            }
+            $index++;   
         }
         else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
             while ($coordonate_Y_start<=$coordonate_Y_end){
                     $board1[$coordonate_Y_start][$coordonate_X_start]="O";
+                    $player_ships[$index][] = $coordonate_X_start . $coordonate_Y_start;
                     $coordonate_Y_start++;
             }
+            $index++;
         }
     }
 
@@ -83,7 +88,26 @@ function place_ship(&$board1,&$board2,$list_boat){
     display_board($board1,$board2);
 }
 
-function player_fire(&$board){
+function ships_insight(&$bundle_ship, $x, $y){
+    foreach ($bundle_ship as $key => $value) {
+        $count = 0;
+        $just_crashed = false;
+        foreach ($value as $value2) {
+            if($value2[0] == $x && $value2[1]){
+                $bundle_ship[$key] = "KO";
+                $just_crashed = true;
+            }
+            else if ($value2 != "KO"){
+                $count++;
+            } 
+        }
+        if($just_crashed){
+            echo "Coulé!"
+        }
+    }
+}
+
+function player_fire(&$board, &$ai_ship){
     $is_right = false;
     while(!$is_right){
         echo "Please choose where you wanna fire(Ex A1): ";
@@ -94,8 +118,9 @@ function player_fire(&$board){
         if($board[$x][$y] != "X"){
             if($board[$x][$y] == "O"){
                 $board[$x][$y] = "@";
+                echo "Touché!";
                 $is_right = true;
-                // mettre à jour le scoring
+                ships_insight($ai_ship, $x, $y);
                 return;
             }
             $board[$x][$y] = "X";
@@ -104,7 +129,7 @@ function player_fire(&$board){
     }
 }
 
-function computer_fire(&$board){
+function computer_fire(&$board, &$player_ship){
     $is_right = false;
     while(!$is_right){
         $x = mt_rand(0, 9);
@@ -115,7 +140,8 @@ function computer_fire(&$board){
             if($board[$x][$y] == "O"){
                 $board[$x][$y] = "@";
                 $is_right = true;
-                // mettre à jour le scoring
+                echo "Touché";
+                ships_insight($player_ship, $x, $y);
                 return;
             }
             $board[$x][$y] = "X";
@@ -124,8 +150,31 @@ function computer_fire(&$board){
     }
 }
 
+function check_scoring($bundle_ship){
+    $ships = 5;
+    foreach ($$bundle_ship as $key => $value) {
+        $count == 0;
+        foreach ($value as $value2) {
+            if($value2 != "KO"){
+                $count++;
+            }
+        }
+        if($count == 0){
+            $ships--;
+        }
+    }
+    return $ships;
+}
 
-function is_winned(){
+function is_winned($ai_ship, $player_ship){
+    if (check_scoring($ai_ship) == 0){
+        echo "Player won!";
+        return true;
+    }
+    else if (check_scoring($player_ship) == 0){
+        echo "AI won!";
+        return true;
+    }
 }
 
 //------------------------
@@ -143,7 +192,9 @@ while($wanna_play){
         }
     }
 
-    place_ship($board1,$board2,$list_boat);
+    $player_ship = [];
+
+    place_ship($board1,$board2,$list_boat, $player_ships);
 
     // ship placement
 
@@ -153,14 +204,16 @@ while($wanna_play){
     //display_board($board1, $board2);
 
     // game
-    $victory=false;
-    while(!$victory){
+    while {
         // afficher les stats
-        //player_fire($board2);
-        //is_winned(); // don't forget the if
-        //computer_fire($board1);
-        //is_winned(); //don't forget the if and break
-        $victory = true;
+        //player_fire($board2, $ai_ship);
+        //if(is_winned($ai_ship, $player_ship)){
+        //    break;
+        //} // don't forget the if
+        //computer_fire($board1, $player_ship);
+        //if(is_winned($ai_ship, $player_ship)){
+        //    break;
+        //} //don't forget the if and break
     }
     // replay
     echo "Wanna replay? (y/n)\n";
