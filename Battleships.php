@@ -2,6 +2,7 @@
 
 // PENSER A METTTRE EN CONSTANTES LES COORDONNES
 
+
 const CONVERTER_LETTER=["A"=>"0","B"=>"1","C"=>"2","D"=>"3","E"=>"4","F"=>"5","G"=>"6","H"=>"7","I"=>"8","J"=>"9"];
 const CONVERTER_NUMBER=["1"=>"0","2"=>"1","3"=>"2","4"=>"3","5"=>"4","6"=>"5","7"=>"6","8"=>"7","9"=>"8","10"=>"9"];
 
@@ -21,8 +22,35 @@ function display_board($board1, $board2){
     }    
 }
 
+// length of the boat
+$list_boat=[2,3,3,4,5];
+function lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,&$list_boat){
+    //check the lenght of the boat
+    $count=0;
+    if ($coordonate_X_start<$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
+        $lenght_boat=$coordonate_X_end-$coordonate_X_start;
+        if($lenght_boat==3){    
+            $count=$count++;
+        }
+        if($count==2){
+            $list_boat = \array_diff($list_boat, ["3"]);
+        }
+        if($lenght_boat!=3){
+            $list_boat = \array_diff($list_boat, [$lenght_boat]);
+        }
+    }
+    else if ($coordonate_Y_start<$coordonate_Y_end && $coordonate_X_start==$coordonate_X_end){
+        $lenght_boat=$coordonate_Y_end-$coordonate_Y_start;
+
+    }
+    else{
+        print "Les bateaux de 1 n'existent pas fdp de tes grands morts, personne ne t'a jamais aimer, meme pas ta mere, t'es meme adopter, tout le monde fait semblant et tu le sais, va te pendre, ta vie entière est une errreur, zebi <3\n";
+    }
+    place_ship($board1,$board2,$list_boat);
+
+}
 // place ships
-function place_ship(&$board1,&$board2){  
+function place_ship(&$board1,&$board2,$list_boat){
     $place=trim(fgets(STDIN));
     $coordonate_Y_start=CONVERTER_LETTER[$place[0]];
     $coordonate_X_start=CONVERTER_NUMBER[$place[1]];
@@ -41,6 +69,10 @@ function place_ship(&$board1,&$board2){
         else {
             $is_right=true;
         }
+    }
+
+    if(count($list_boat)!=0){
+        lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,$list_boat);
     }
     
     if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
@@ -99,6 +131,7 @@ function computer_fire(&$board){
     }
 }
 
+
 function is_winned(){
     break;
 }
@@ -117,7 +150,9 @@ while($wanna_play){
             $board2[$i][$j] = "~";
         }
     }
-    place_ship($board1,$board2);
+
+    place_ship($board1,$board2,$list_boat);
+
     // ship placement
 
     // IA ship placement
