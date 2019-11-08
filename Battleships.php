@@ -10,14 +10,20 @@ const CONVERTER_NUMBER=["1"=>"0","2"=>"1","3"=>"2","4"=>"3","5"=>"4","6"=>"5","7
 
 // display the boards
 function display_board($board1, $board2){
+    $letter = "A";
+    echo "  1 2 3 4 5 6 7 8 9 10    |      1 2 3 4 5 6 7 8 9 10\n";
     foreach ($board1 as $key => $value){
+        echo $letter . " ";
+
         foreach ($value as $value2){
             print "\e[1;37;44m" . $value2. " \e[0m";     
         }
         echo "    |    ";
+        echo $letter . " ";
         foreach ($board2[$key] as $value2){
             print "\e[1;37;44m" .$value2 . " \e[0m";
         }
+        $letter++;
         echo "\n";
     }    
 }
@@ -86,6 +92,78 @@ function place_ship(&$board1,&$board2, &$player_ship){
             $index++;
         }
         display_board($board1,$board2);
+    }
+}
+
+//AI
+
+function ai_placement_ship(&$board1,&$board2, &$ai_ship){
+    $list_boat_AI=[2,3,4,5,6];
+    $is_right=false;  
+    while(!$is_right){
+        if(count($list_boat_AI) == 0){
+            break;
+        }
+        $coordonate_Y_start=mt_rand(0,9);
+        $coordonate_X_start=mt_rand(0,9);
+        if (mt_rand(0,1)<1){
+            $coordonate_Y_end=mt_rand(0,9);
+            $coordonate_X_end=$coordonate_X_start;
+            while ($coordonate_Y_end){
+            $coordonate_Y_end=mt_rand(0,9);
+            }
+            
+        }
+        else{
+            $coordonate_X_end=mt_rand(0,9);
+            $coordonate_Y_end=$coordonate_Y_start;
+            while ($coordonate_X_end==$coordonate_X_start){
+            $coordonate_X_end=mt_rand(0,9);
+            }
+            
+        }
+        
+        echo $coordonate_X_start . "-" . $coordonate_Y_start . "      " . $coordonate_X_end . "-" . $coordonate_Y_end . "\n";
+        
+        if($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
+            print "Pas de bateau en diagonale \n";   
+            continue;
+        }
+        lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,$list_boat_AI);
+        if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
+            while ($coordonate_X_start<=$coordonate_X_end){
+                $board2[$coordonate_Y_start][$coordonate_X_start]="O";
+                $ai_ship[$index][] = $coordonate_X_start . $coordonate_Y_start;
+                $coordonate_X_start++;
+            }    
+        }
+        else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
+            while ($coordonate_Y_start<=$coordonate_Y_end){
+                    $board2[$coordonate_Y_start][$coordonate_X_start]="O";
+                    $ai_ship[$index][] = $coordonate_X_start . $coordonate_Y_start;
+                    $coordonate_Y_start++;
+            }
+        }
+    }
+}
+
+function ai_placement_ship_proto(&$board1,&$board2, &$ai_ship){
+    $list_boat_AI = 5;
+    $is_right = false; 
+    $index = 0;
+    while(!$is_right){
+        if($list_boat_AI == 0){
+            break;
+        }
+        $coordonate_Y=mt_rand(0,9);
+        $coordonate_X=mt_rand(0,9);
+        
+        if($board2[$coordonate_X][$coordonate_Y] != "O"){
+            $board2[$coordonate_X][$coordonate_Y] = "O";
+            $ai_ship[$index][] = $coordonate_X . $coordonate_Y;
+            $list_boat_AI--;
+        }
+        $index++;
     }
 }
 
@@ -178,87 +256,6 @@ function is_winned($ai_ship, $player_ship){
     }
 }
 
-//AI
-
-function ai_placement_ship(&$board1,&$board2, &$ai_ship){
-    $list_boat_AI=[2,3,4,5,6];
-    $is_right=false;  
-    while(!$is_right){
-        if(count($list_boat_AI) == 0){
-            break;
-        }
-        $coordonate_Y_start=mt_rand(0,9);
-        $coordonate_X_start=mt_rand(0,9);
-        if (mt_rand(0,1)<1){
-            $coordonate_Y_end=mt_rand(0,9);
-            $coordonate_X_end=$coordonate_X_start;
-            while ($coordonate_Y_end){
-            $coordonate_Y_end=mt_rand(0,9);
-            }
-            
-        }
-        else{
-            $coordonate_X_end=mt_rand(0,9);
-            $coordonate_Y_end=$coordonate_Y_start;
-            while ($coordonate_X_end==$coordonate_X_start){
-            $coordonate_X_end=mt_rand(0,9);
-            }
-            
-        }
-        
-        echo $coordonate_X_start . "-" . $coordonate_Y_start . "      " . $coordonate_X_end . "-" . $coordonate_Y_end . "\n";
-        
-        if($coordonate_X_start!=$coordonate_X_end && $coordonate_Y_start!=$coordonate_Y_end){
-            print "Pas de bateau en diagonale \n";   
-            continue;
-        }
-        lenght_boat($coordonate_Y_start,$coordonate_X_start,$coordonate_Y_end,$coordonate_X_end,$list_boat_AI);
-        if ($coordonate_X_start<=$coordonate_X_end && $coordonate_Y_start==$coordonate_Y_end){
-            while ($coordonate_X_start<=$coordonate_X_end){
-                $board2[$coordonate_Y_start][$coordonate_X_start]="O";
-                $ai_ship[$index][] = $coordonate_X_start . $coordonate_Y_start;
-                $coordonate_X_start++;
-            }    
-        }
-        else if($coordonate_X_start==$coordonate_X_end && $coordonate_Y_start<=$coordonate_Y_end){
-            while ($coordonate_Y_start<=$coordonate_Y_end){
-                    $board2[$coordonate_Y_start][$coordonate_X_start]="O";
-                    $ai_ship[$index][] = $coordonate_X_start . $coordonate_Y_start;
-                    $coordonate_Y_start++;
-            }
-        }
-    }
-}
-
-function ai_placement_ship_proto(&$board1,&$board2, &$ai_ship){
-    $list_boat_AI = 5;
-    $is_right = false; 
-    $index = 0;
-    while(!$is_right){
-        if($list_boat_AI == 0){
-            break;
-        }
-        $coordonate_Y=mt_rand(0,9);
-        $coordonate_X=mt_rand(0,9);
-        
-        if($board2[$coordonate_X][$coordonate_Y] != "O"){
-            $board2[$coordonate_X][$coordonate_Y] = "O";
-            $ai_ship[$index][] = $coordonate_X . $coordonate_Y;
-            $list_boat_AI--;
-        }
-        $index++;
-    }
-}
-
-function display_ship($bundle_ship){
-    foreach ($bundle_ship as $key => $value) {
-        echo $key . "\n";
-        foreach ($value as $value2) {
-            echo $value2 . "\n";
-        }
-    }
-}
-
 //------------------------
 
 $wanna_play = true;
@@ -274,16 +271,13 @@ while($wanna_play){
         }
     }
 
+    // These arrays are needed for keeping record of ships's state
     $player_ship = [];
     $ai_ship = [];
 
     place_ship($board1,$board2, $player_ship);
     ai_placement_ship_proto($board1,$board2, $ai_ship);
     //ai_placement_ship($board1,$board2, $ai_ship);
-    
-    display_board($board1,$board2);
-    echo count($player_ship);
-    display_ship($player_ship);
 
     // game
     while(true) {
